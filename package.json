@@ -1,0 +1,14 @@
+{
+  "name": "estuary",
+  "description": "Music Coding Framework for writing music in Ableton Live",
+  "author": "Nobel Yoo <nobr@nobr.me>",
+  "version": "0.1.0",
+  "main": "estuary",
+  "dependencies": {
+    "ableton-js": "^2.1.4",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "mocha": "^9.1.3"
+  }
+}
