@@ -2,15 +2,21 @@ const _ = require("lodash");
 const { Ableton } = require("ableton-js");
 const ableton = new Ableton();
 
-const abletonClips = {};
-
 exports.sync = async (state) => {
+  if (state.name) {
+    let rawdata = fs.readFileSync(`/tmp/${state.name}_state.json`);
+    let abletonClips = {};
+    if (rawdata) {
+      let abletonClips = JSON.parse(rawdata);
+    }
+  }
+
   // set tempo
   await ableton.song.set("tempo", state.bpm);
 
   const tracks = await ableton.song.get("tracks");
   // write and/or update clips
-  diffClips = getUpdatedClips(state);
+  diffClips = getUpdatedClips(state, abletonClips);
   for (const stateClip of diffClips) {
     validateClip(stateClip);
     const track = tracks.filter((track) => {
@@ -18,6 +24,21 @@ exports.sync = async (state) => {
     })[0];
     if (!track) {
       throw new Error(`Track ${stateClip.track} could not be found`);
+    }
+    if (stateClip.sound) {
+      try {
+        const devices = await.track.get("devices");
+        const instrument = devices.filter((devices) => {
+          return devices.type === "instrument";
+        });
+        const parameters = await instrument.get("parameters");
+        const soundParam = parameters.filter((parameter) => {
+          return parameter.name === "sound";
+        });
+        await soundParam.set("value", stateClip.sound);
+      } catch (e) {
+        console.log(`WARNING: Sound could not be set. Error: ${e}`);
+      }
     }
     const clipSlots = await track.get("clip_slots");
     const clipSlot = clipSlots[stateClip.scene];
@@ -31,7 +52,7 @@ exports.sync = async (state) => {
     await clip.setNotes(stateClip.notes)
   }
 
-  removeClips = getRemovedClips(state);
+  removeClips = getRemovedClips(state, abletonClips);
   for (const clip of removeClips) {
     const track = tracks.filter((track) => {
       return track.raw.name === clip.track
@@ -41,10 +62,13 @@ exports.sync = async (state) => {
     await clipSlot.deleteClip();
   }
 
-  abletonState = Object.assign({}, state.clips);
+  if (state.name) {
+    let data = JSON.stringify(abletonStte);
+    fs.writeFileSync(`/tmp/${state.name}_state.json`, data);
+  }
 }
 
-function getUpdatedClips(state) {
+function getUpdatedClips(state, abletonClips) {
   const newClips = []
   for (const clipName in state.clips) {
     // if clip is totally new
@@ -62,7 +86,7 @@ function getUpdatedClips(state) {
   return newClips;
 }
 
-function getRemovedClips(state) {
+function getRemovedClips(state, abletonClip) {
   const deleteClips = []
   for (const clipName in abletonClips) {
     if (!state.clips[clipName]) {

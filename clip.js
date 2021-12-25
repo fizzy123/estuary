@@ -3,7 +3,15 @@ class Clip {
     this.notes = clipParams.notes;
     this.loopLength = clipParams.loopLength;
     this.track = clipParams.track;
-    this.scene = clipParams.scene
+    this.scene = clipParams.scene;
+    this.sound = clipParams.sound;
+  }
+  
+  sound(soundIndex) {
+    if (sound < 0 || sound > 127) {
+      return new Error("sound must be between 0 and 127");
+    }
+    this.sound = sound;
   }
 }
 
@@ -24,7 +32,6 @@ Clip.namedClips = {
       }
     ],
     loopLength: 4,
-    track: "snare",
   },
 }
 module.exports = Clip

@@ -57,20 +57,20 @@ exports.makeChord = (root, type) => {
 exports.addShortHandClip = (clipName) => {
 }
 
-exports.addNamedClip = (clipName, trackName) => {
+exports.addNamedClip = (clipName, track) => {
+  if (!track) {
+    throw new Error("No trackName provided");
+  }
   if (Clip.namedClips[clipName]) {
-    return exports.addClip(Clip.namedClips[clipName])
+    return exports.addClip({ ...Clip.namedClips[clipName], track })
   } else if (chordMapping.mappingDefs[clipName]) {
     if (_.isEmpty(state.progression)) {
       throw new Error("No progression found. Please set progression before adding a chord mapping");
     }
-    if (!trackName) {
-      throw new Error("No trackName provided");
-    }
     const notes = chordMapping.renderChordMapping(chordMapping.mappingDefs[clipName], state.progression)
     return exports.addClip({
       notes,
-      track: trackName,
+      track,
       loopLength: state.progression.duration,
     });
   }

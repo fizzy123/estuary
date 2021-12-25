@@ -4,7 +4,7 @@ const Clip = require("../clip");
 
 describe("create named clip", function() {
   it("should create named clips properly", () => {
-    const namedClip = spec.addNamedClip("2snareBeat");
+    const namedClip = spec.addNamedClip("2snareBeat","snare");
     assert.deepEqual(namedClip, new Clip({
       notes: [
         {
@@ -26,7 +26,7 @@ describe("create named clip", function() {
 
   it("should fail creating chordMapping if no progression", () => {
     try {
-      spec.addNamedClip("downArp4");
+      spec.addNamedClip("downArp4", "arps");
     } catch (e) {
       assert.equal(e.message, "No progression found. Please set progression before adding a chord mapping");
     }
