@@ -156,14 +156,14 @@ exports.mappingDefs = {
     {chordIndex: -1, start: 3.5, octave: 1},
     {chordIndex: 0, start: 3.75, octave: 1},
   ],
-  tonic2offset: [ // tonic fast snare
+  tonic2Offset: [ // tonic fast snare
     {chordIndex: 0, start: 1, octave: 0},
     {chordIndex: 0, start: 3, octave: 0},
   ],
-  tonic1offset: [ // tonic slow snare
+  tonic1Offset: [ // tonic slow snare
     {chordIndex: 0, start: 2, octave: 0},
   ],
-  tonic4offset: [ // off beats
+  tonic4Offset: [ // off beats
     {chordIndex: 0, start: 0.5, octave: 0},
     {chordIndex: 0, start: 1.5, octave: 0},
     {chordIndex: 0, start: 2.5, octave: 0},
@@ -312,48 +312,7 @@ exports.mappingDefs = {
     {chordIndex: -2, start: 3, octave: 0},
     {chordIndex: -3, start: 3, octave: 0}
   ],
-  chord8: [ // chord every eigth note
-    {chordIndex: 0, start: 0, octave: 0},
-    {chordIndex: -1, start: 0, octave: 0},
-    {chordIndex: -2, start: 0, octave: 0},
-    {chordIndex: -3, start: 0, octave: 0},
-
-    {chordIndex: 0, start: 0.5, octave: 0},
-    {chordIndex: -1, start: 0.5, octave: 0},
-    {chordIndex: -2, start: 0.5, octave: 0},
-    {chordIndex: -3, start: 0.5, octave: 0},
-
-    {chordIndex: 0, start: 1, octave: 0},
-    {chordIndex: -1, start: 1, octave: 0},
-    {chordIndex: -2, start: 1, octave: 0},
-    {chordIndex: -3, start: 1, octave: 0},
-
-    {chordIndex: 0, start: 1.5, octave: 0},
-    {chordIndex: -1, start: 1.5, octave: 0},
-    {chordIndex: -2, start: 1.5, octave: 0},
-    {chordIndex: -3, start: 1.5, octave: 0},
-
-    {chordIndex: 0, start: 2, octave: 0},
-    {chordIndex: -1, start: 2, octave: 0},
-    {chordIndex: -2, start: 2, octave: 0},
-    {chordIndex: -3, start: 2, octave: 0},
-
-    {chordIndex: 0, start: 2.5, octave: 0},
-    {chordIndex: -1, start: 2.5, octave: 0},
-    {chordIndex: -2, start: 2.5, octave: 0},
-    {chordIndex: -3, start: 2.5, octave: 0},
-
-    {chordIndex: 0, start: 3, octave: 0},
-    {chordIndex: -1, start: 3, octave: 0},
-    {chordIndex: -2, start: 3, octave: 0},
-    {chordIndex: -3, start: 3, octave: 0},
-
-    {chordIndex: 0, start: 3.5, octave: 0},
-    {chordIndex: -1, start: 3.5, octave: 0},
-    {chordIndex: -2, start: 3.5, octave: 0},
-    {chordIndex: -3, start: 3.5, octave: 0}
-  ],
-  chord2offest: [ // chord fast snare
+  chord2Offset: [ // chord fast snare
     {chordIndex: 0, start: 1, octave: 0},
     {chordIndex: -1, start: 1, octave: 0},
     {chordIndex: -2, start: 1, octave: 0},
@@ -363,7 +322,7 @@ exports.mappingDefs = {
     {chordIndex: -2, start: 3, octave: 0},
     {chordIndex: -3, start: 3, octave: 0}
   ],
-  chord1offset: [ // chord slow snare
+  chord1Offset: [ // chord slow snare
     {chordIndex: 0, start: 2, octave: 0},
     {chordIndex: -1, start: 2, octave: 0},
     {chordIndex: -2, start: 2, octave: 0},
@@ -375,7 +334,7 @@ exports.mappingDefs = {
     {chordIndex: -2, start: 0, octave: 0},
     {chordIndex: -3, start: 0, octave: 0},
   ],
-  chord4offset: [ // chord off beats
+  chord4Offset: [ // chord off beats
     {chordIndex: 0, start: 0.5, octave: 0},
     {chordIndex: -1, start: 0.5, octave: 0},
     {chordIndex: -2, start: 0.5, octave: 0},
@@ -438,19 +397,19 @@ exports.mappingDefs = {
     {chordIndex: -2, start: 3.5, octave: 0},
     {chordIndex: -3, start: 3.5, octave: 0}
   ],
-  tonic6alt1: [ // kick rhythm 9 standalone
+  tonic3alt1: [ // kick rhythm 9 standalone
     {chordIndex: 0, start: 0, octave: 0},
     {chordIndex: 0, start: 1.5, octave: 0},
     {chordIndex: 0, start: 2.5, octave: 0},
     {chordIndex: 0, start: 3, octave: 0}
   ],
-  tonic6alt2: [ // kick rhythm 10 standalone
+  tonic3alt2: [ // kick rhythm 10 standalone
     {chordIndex: 0, start: 0, octave: 0},
     {chordIndex: 0, start: 1.5, octave: 0},
     {chordIndex: 0, start: 2.5, octave: 0},
     {chordIndex: 0, start: 3.5, octave: 0}
   ],
-  tonic3alt1: [ // kick rhythm 12 standalone
+  tonic3alt3: [ // kick rhythm 12 standalone
     {chordIndex: 0, start: 0, octave: 0},
     {chordIndex: 0, start: 1.5, octave: 0},
     {chordIndex: 0, start: 3, octave: 0},
@@ -458,7 +417,7 @@ exports.mappingDefs = {
     {chordIndex: 0, start: 6, octave: 0},
     {chordIndex: 0, start: 7.5, octave: 0},
   ],
-  tonicFastSync1: [ // kick rhythm 13 standalone
+  tonicFastSyncopate1: [ // kick rhythm 13 standalone
     {chordIndex: 0, start: 0, octave: 0},
     {chordIndex: 0, start: 0.75, octave: 0},
     {chordIndex: 0, start: 1, octave: 0},
@@ -474,7 +433,7 @@ exports.mappingDefs = {
     {chordIndex: 0, start: 2.75, octave: 0},
     {chordIndex: 0, start: 3.5, octave: 0},
   ],
-  tonic6alt3: [ // 6 rhythm no follow up
+  tonic3alt4: [ // 6 rhythm no follow up
     {chordIndex: 0, start: 0, octave: 0},
     {chordIndex: 0, start: 0.75, octave: 0},
     {chordIndex: 0, start: 1.5, octave: 0},
@@ -498,12 +457,12 @@ exports.mappingDefs = {
     {chordIndex: -1, start: 1.5, octave: 0},
     {chordIndex: -2, start: 3, octave: 0},
   ],
-  mixArp3Alt: [ // 3 rhythm mixed
+  mixArp3Alt1: [ // 3 rhythm mixed
     {chordIndex: -1, start: 0, octave: 0},
     {chordIndex: -2, start: 1.5, octave: 0},
     {chordIndex: 0, start: 3, octave: 0},
   ],
-  misArp3Alt: [ // 3 rhythm mixed
+  mixArp3Alt2: [ // 3 rhythm mixed
     {chordIndex: -1, start: 0, octave: 0},
     {chordIndex: 0, start: 1.5, octave: 0},
     {chordIndex: -2, start: 3, octave: 0},

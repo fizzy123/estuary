@@ -49,7 +49,8 @@ exports.sync = async (state) => {
     const clip = await clipSlot.get("clip");
     await clip.set("loop_start", 0);
     await clip.set("loop_end", stateClip.loopLength);
-    await clip.setNotes(stateClip.notes)
+    await clip.selectAllNotes();
+    await clip.replaceSelectedNotes(stateClip.notes)
   }
 
   removeClips = getRemovedClips(state, abletonClips);
