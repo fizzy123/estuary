@@ -25,23 +25,8 @@ exports.sync = async (state) => {
     if (!track) {
       throw new Error(`Track ${stateClip.track} could not be found`);
     }
-    if (stateClip.sound) {
-      try {
-        const devices = await.track.get("devices");
-        const instrument = devices.filter((devices) => {
-          return devices.type === "instrument";
-        });
-        const parameters = await instrument.get("parameters");
-        const soundParam = parameters.filter((parameter) => {
-          return parameter.name === "sound";
-        });
-        await soundParam.set("value", stateClip.sound);
-      } catch (e) {
-        console.log(`WARNING: Sound could not be set. Error: ${e}`);
-      }
-    }
     const clipSlots = await track.get("clip_slots");
-    const clipSlot = clipSlots[stateClip.scene];
+    const clipSlot = clipSlots[0];
     const clipExists = await clipSlot.get("has_clip");
     if (!clipExists) {
       await clipSlot.createClip(stateClip.loopLength);
@@ -59,7 +44,7 @@ exports.sync = async (state) => {
       return track.raw.name === clip.track
     })[0];
     const clipSlots = await track.get("clipSlots");
-    const clipSlot = clipSlots[clip.scene];
+    const clipSlot = clipSlots[0];
     await clipSlot.deleteClip();
   }
 
@@ -103,9 +88,6 @@ function validateClip(clip) {
   }
   if (!clip.loopLength) {
     throw new Error("Loop Length not specified");
-  }
-  if (clip.scene === undefined) {
-    throw new Error("scene not specified");
   }
   if (!clip.notes) {
     throw new Error("Notes not provided");

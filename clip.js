@@ -6,17 +6,8 @@ class Clip {
     this.notes = clipParams.notes;
     this.loopLength = clipParams.loopLength;
     this.track = clipParams.track;
-    this.scene = clipParams.scene;
-    this.sound = clipParams.sound;
   }
   
-  sound(soundIndex) {
-    if (sound < 0 || sound > 127) {
-      return new Error("sound must be between 0 and 127");
-    }
-    this.sound = sound;
-  }
-
   // clip is an addition clip to be merged
   // splicePoint describes the time at which clips should be spliced.
   // ignores everything besides clips
@@ -38,8 +29,14 @@ class Clip {
 
   // saves to state
   save() {
-    this.scene = spec.state.scene;
-    spec.state.clips[`${this.track}.${spec.state.scene}`] = this;
+    spec.state.clips[`${this.track}`] = this;
+    return this
+  }
+
+  setVelocity(velocity) {
+    for (const note of this.notes) {
+      note.velocity = velocity
+    }
     return this
   }
 }

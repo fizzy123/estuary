@@ -22,7 +22,6 @@ describe("create named clip", function() {
       ],
       loopLength: 4,
       track: "snare",
-      scene: 0,
     }));
   });
 
@@ -127,7 +126,6 @@ describe("create named clip", function() {
       ],
       loopLength: 16,
       track: "arps",
-      scene: 0,
     }));
   });
 
@@ -224,7 +222,6 @@ describe("create named clip", function() {
       ],
       loopLength: 16,
       track: "arps",
-      scene: 0,
     }));
   });
 
@@ -321,7 +318,6 @@ describe("create named clip", function() {
       ],
       loopLength: 16,
       track: "arps",
-      scene: 0,
     }));
   });
 
@@ -419,12 +415,10 @@ describe("create named clip", function() {
       ],
       loopLength: 16,
       track: "arps",
-      scene: 0,
     }));
   });
 
-  it("should transition to new sections properly", () => {
-    spec.transition();
+  it("should set volocity properly", () => {
     scale.setScale("D", "major");
     Chord.progression([
       Chord.makeChord("I").start(0),
@@ -432,93 +426,108 @@ describe("create named clip", function() {
       Chord.makeChord("vi").start(8),
       Chord.makeChord("V").start(12),
     ]);
-    const namedClip = Clip.makeNamedClip("downArp4", "arps").save();
+    const namedClip = Clip.makeNamedClip("downArp4", "arps").setVelocity(50).save();
     assert.deepEqual(namedClip, new Clip({
       notes: [
         {
           pitch: 69,
           start: 0,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 66,
           start: 1,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 62,
           start: 2,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 57,
           start: 3,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 71,
           start: 4,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 67,
           start: 5,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 64,
           start: 6,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 59,
           start: 7,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 78,
           start: 8,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 74,
           start: 9,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 71,
           start: 10,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 66,
           start: 11,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 76,
           start: 12,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 73,
           start: 13,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 69,
           start: 14,
           duration: 0.75,
+          velocity: 50,
         },
         {
           pitch: 64,
           start: 15,
           duration: 0.75,
+          velocity: 50,
         },
       ],
       loopLength: 16,
       track: "arps",
-      scene: 1,
     }));
   });
 });
