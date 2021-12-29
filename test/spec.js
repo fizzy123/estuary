@@ -129,6 +129,217 @@ describe("create named clip", function() {
     }));
   });
 
+  it("should create chordMapping correctly with start and endtime", () => {
+    Chord.progression([
+      Chord.makeChord("I").start(0),
+      Chord.makeChord("ii").start(4),
+      Chord.makeChord("vi").start(8),
+      Chord.makeChord("V").start(12),
+    ]);
+    const namedClip = Clip.makeNamedClip("downArp4", "arps").addToArrangement(0, 16).save();
+    assert.deepEqual(namedClip, new Clip({
+      notes: [
+        {
+          pitch: 67,
+          start: 0,
+          duration: 0.75,
+        },
+        {
+          pitch: 64,
+          start: 1,
+          duration: 0.75,
+        },
+        {
+          pitch: 60,
+          start: 2,
+          duration: 0.75,
+        },
+        {
+          pitch: 55,
+          start: 3,
+          duration: 0.75,
+        },
+        {
+          pitch: 69,
+          start: 4,
+          duration: 0.75,
+        },
+        {
+          pitch: 65,
+          start: 5,
+          duration: 0.75,
+        },
+        {
+          pitch: 62,
+          start: 6,
+          duration: 0.75,
+        },
+        {
+          pitch: 57,
+          start: 7,
+          duration: 0.75,
+        },
+        {
+          pitch: 76,
+          start: 8,
+          duration: 0.75,
+        },
+        {
+          pitch: 72,
+          start: 9,
+          duration: 0.75,
+        },
+        {
+          pitch: 69,
+          start: 10,
+          duration: 0.75,
+        },
+        {
+          pitch: 64,
+          start: 11,
+          duration: 0.75,
+        },
+        {
+          pitch: 74,
+          start: 12,
+          duration: 0.75,
+        },
+        {
+          pitch: 71,
+          start: 13,
+          duration: 0.75,
+        },
+        {
+          pitch: 67,
+          start: 14,
+          duration: 0.75,
+        },
+        {
+          pitch: 62,
+          start: 15,
+          duration: 0.75,
+        },
+      ],
+      startTime: 0,
+      endTime: 16,
+      loopLength: 16,
+      track: "arps",
+    }));
+  });
+
+  it("should create chordMapping correctly with velocity", () => {
+    Chord.progression([
+      Chord.makeChord("I").start(0),
+      Chord.makeChord("ii").start(4),
+      Chord.makeChord("vi").start(8),
+      Chord.makeChord("V").start(12),
+    ]);
+    const namedClip = Clip.makeNamedClip("downArp4", "arps").setVelocity(50).save();
+    assert.deepEqual(namedClip, new Clip({
+      notes: [
+        {
+          pitch: 67,
+          start: 0,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 64,
+          start: 1,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 60,
+          start: 2,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 55,
+          start: 3,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 69,
+          start: 4,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 65,
+          start: 5,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 62,
+          start: 6,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 57,
+          start: 7,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 76,
+          start: 8,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 72,
+          start: 9,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 69,
+          start: 10,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 64,
+          start: 11,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 74,
+          start: 12,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 71,
+          start: 13,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 67,
+          start: 14,
+          duration: 0.75,
+          velocity: 50,
+        },
+        {
+          pitch: 62,
+          start: 15,
+          duration: 0.75,
+          velocity: 50,
+        },
+      ],
+      loopLength: 16,
+      track: "arps",
+    }));
+  });
+
+
   it("should make scale chords", () => {
     Chord.progression([
       Chord.makeScaleChord(0, [2,4]).start(0),

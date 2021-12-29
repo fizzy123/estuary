@@ -36,6 +36,13 @@ exports.sync = async (state) => {
     await clip.set("loop_end", stateClip.loopLength);
     await clip.selectAllNotes();
     await clip.replaceSelectedNotes(stateClip.notes)
+    if (stateClip.startTime !== undefined && stateClip.endTime !== undefined) {
+      const localTime = stateClip.startTime
+      while (localTime < stateClip.endTime) {
+        await track.sendCommand("duplicate_clip_to_arrangement", {clip_id: clip.raw.id, time: stateClip.localTime});
+        localTime = localTime + stateClip.loopLength
+      }
+    }
   }
 
   removeClips = getRemovedClips(state, abletonClips);

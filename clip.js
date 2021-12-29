@@ -6,6 +6,8 @@ class Clip {
     this.notes = clipParams.notes;
     this.loopLength = clipParams.loopLength;
     this.track = clipParams.track;
+    this.startTime = clipParams.startTime;
+    this.endTime = clipParams.endTime;
   }
   
   // clip is an addition clip to be merged
@@ -38,6 +40,20 @@ class Clip {
       note.velocity = velocity
     }
     return this
+  }
+  addToArrangement(startTime, endTime) {
+    if (startTime === undefined) {
+      throw new Error("startTime needs to be defined");
+    }
+    if (endTime === undefined) {
+      throw new Error("endTime needs to be defined");
+    }
+    if (startTime > endTime) {
+      throw new Error("startTime is higher than endTime");
+    }
+    this.startTime = startTime;
+    this.endTime = endTime;
+    return this;
   }
 }
 
