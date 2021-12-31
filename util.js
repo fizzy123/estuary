@@ -35,6 +35,19 @@ exports.randomChoice = (array) => {
   }
 }
 
+exports.randomSelection = (inputArray, selectionCount) => {
+  let arrCopy = inputArray.slice()
+
+  let ranIdx
+  let resArr = []
+
+  for(i=0; i < selectionCount; i++){
+    ranIdx = Math.floor(Math.random() * arrCopy.length)
+    resArr.push(arrCopy.splice(ranIdx,1)[0])  
+  }
+  return resArr
+}
+
 exports.notes = {
   "C": 0,
   "C#": 1,

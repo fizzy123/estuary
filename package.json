@@ -6,7 +6,9 @@
   "main": "estuary",
   "dependencies": {
     "ableton-js": "^2.1.4",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "sqlite3": "^5.0.2",
+    "why-is-node-running": "^2.2.0"
   },
   "devDependencies": {
     "mocha": "^9.1.3"

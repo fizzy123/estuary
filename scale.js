@@ -12,4 +12,5 @@ exports.setScale = (root, keySignature) => {
   };
   spec.state.scale.root = root;
   spec.state.scale.keySignature = exports.keySignatures[keySignature];
+  spec.state.scale.name = keySignature;
 }

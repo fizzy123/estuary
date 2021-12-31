@@ -29,9 +29,24 @@ class Clip {
     return this;
   }
 
+  slice(startTime, endTime) {
+    const newNotes = []
+    for (const note of this.notes) {
+      if (note.start > startTime && note.start < endTime) {
+        newNotes.push(note);
+      }
+    }
+    this.notes = newNotes
+    return this;
+  }
+
   // saves to state
   save() {
-    spec.state.clips[`${this.track}`] = this;
+    let name = `${this.track}`
+    if (this.startTime !== undefined) {
+      name = `${this.track}.${this.startTime}`
+    }
+    spec.state.clips[name] = this;
     return this
   }
 
@@ -62,7 +77,7 @@ Clip.makeNamedClip = (clipName, track) => {
     throw new Error("No trackName provided");
   }
   if (Clip.namedClips[clipName]) {
-    return new Clip({ ...Clip.namedClips[clipName], track })
+    return new Clip({ ...JSON.parse(JSON.stringify(Clip.namedClips[clipName])), track })
   } else if (chordMapping.mappingDefs[clipName]) {
     if (_.isEmpty(spec.state.progression)) {
       throw new Error("No progression found. Please set progression before adding a chord mapping");
@@ -165,29 +180,9 @@ Clip.namedClips = {
         pitch: Clip.PERC_DEFAULT_PITCH,
         start: 1.5,
         duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 2,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 2.5,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 3,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 3.5,
-        duration: 1,
       }
     ],
-    loopLength: 4,
+    loopLength: 2,
   },
   "16": {
     notes: [
@@ -211,68 +206,53 @@ Clip.namedClips = {
         start: 0.75,
         duration: 1,
       },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 1,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 1.25,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 1.5,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 1.75,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 2,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 2.25,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 2.5,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 2.75,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 3,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 3.25,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 3.5,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 3.75,
-        duration: 1,
-      }
     ],
-    loopLength: 4,
+    loopLength: 1,
+  },
+  "32": {
+    notes: [
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 0,
+        duration: 1,
+      },
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 0.125,
+        duration: 1,
+      },
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 0.25,
+        duration: 1,
+      },
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 0.375,
+        duration: 1,
+      },
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 0.5,
+        duration: 1,
+      },
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 0.625,
+        duration: 1,
+      },
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 0.75,
+        duration: 1,
+      },
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 0.875,
+        duration: 1,
+      },
+    ],
+    loopLength: 1,
   },
   "1offset": {
     notes: [
