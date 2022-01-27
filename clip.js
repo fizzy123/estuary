@@ -1,6 +1,7 @@
 const _ = require("lodash");
 const chordMapping = require("./chordMapping");
 const spec = require("./spec");
+const util = require("./util");
 class Clip {
   constructor(clipParams) {
     this.notes = clipParams.notes;
@@ -8,6 +9,7 @@ class Clip {
     this.track = clipParams.track;
     this.startTime = clipParams.startTime;
     this.endTime = clipParams.endTime;
+    this.sceneNumber = clipParams.sceneNumber;
   }
   
   // clip is an addition clip to be merged
@@ -46,6 +48,9 @@ class Clip {
     if (this.startTime !== undefined) {
       name = `${this.track}.${this.startTime}`
     }
+    if (this.sceneNumber !== undefined) {
+      name = `${this.track}.${this.sceneNumber}`
+    }
     spec.state.clips[name] = this;
     return this
   }
@@ -56,6 +61,12 @@ class Clip {
     }
     return this
   }
+
+  setSceneNumber(sceneNumber) {
+    this.sceneNumber = sceneNumber;
+    return this
+  }
+
   addToArrangement(startTime, endTime) {
     if (startTime === undefined) {
       throw new Error("startTime needs to be defined");
@@ -89,6 +100,41 @@ Clip.makeNamedClip = (clipName, track) => {
       loopLength: spec.state.progression.duration,
     });
   }
+}
+
+Clip.makeClip = (notes, track, loopLength) => {
+  for (const note of notes) {
+    if (!note.pitch) {
+      const noteString = note.note.split(".")[0];
+      let octave = parseInt(note.note.split(".")[1]);
+      let pitchOffset
+      if (util.notes[noteString] !== undefined) {
+        pitchOffset = util.notes[noteString]
+      } else if (util.intervals[noteString] !== undefined) {
+        if (!spec.state.scale) {
+          throw new Error("scale required to be set if providing interval notes");
+        }
+        pitchOffset = util.intervals[noteString] + util.notes[spec.state.scale.root]
+      } else {
+        if (!spec.state.scale) {
+          throw new Error("scale required to be set if providing scale degrees");
+        }
+        // assume scale offset by default
+        pitchOffset = spec.state.scale.keySignature[parseInt(noteString) % spec.state.scale.keySignature.length] + util.notes[spec.state.scale.root]
+        octave = octave + Math.floor(parseInt(noteString) / spec.state.scale.keySignature.length)
+      }
+      if (pitchOffset === undefined) {
+        throw new Error("pitch offset is undefined")
+      }
+      note.pitch = pitchOffset + (octave + 1) * 12
+      delete note.note
+    }
+  }
+  return new Clip({
+    notes,
+    track,
+    loopLength: loopLength,
+  });
 }
 
 Clip.PERC_DEFAULT_PITCH = 60;
@@ -204,51 +250,6 @@ Clip.namedClips = {
       {
         pitch: Clip.PERC_DEFAULT_PITCH,
         start: 0.75,
-        duration: 1,
-      },
-    ],
-    loopLength: 1,
-  },
-  "32": {
-    notes: [
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 0,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 0.125,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 0.25,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 0.375,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 0.5,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 0.625,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 0.75,
-        duration: 1,
-      },
-      {
-        pitch: Clip.PERC_DEFAULT_PITCH,
-        start: 0.875,
         duration: 1,
       },
     ],

@@ -69,35 +69,37 @@ exports.sync = async (state, removeOldClips) => {
   diffClips = getUpdatedClips(state, abletonClips);
   const updatePromises = []
   for (const stateClip of diffClips) {
-    updatePromises.push((async (stateClip) => {
-      validateClip(stateClip);
-      const track = tracks.filter((track) => {
-        return track.raw.name === stateClip.track
-      })[0];
-      if (!track) {
-        throw new Error(`Track ${stateClip.track} could not be found`);
+    validateClip(stateClip);
+    const track = tracks.filter((track) => {
+      return track.raw.name === stateClip.track
+    })[0];
+    console.log(stateClip.track);
+    if (!track) {
+      throw new Error(`Track ${stateClip.track} could not be found`);
+    }
+    const clipSlots = await track.get("clip_slots");
+    let scene = 0;
+    if (stateClip.sceneNumber) {
+      scene = stateClip.sceneNumber
+    }
+    const clipSlot = clipSlots[scene];
+    const clipExists = await clipSlot.get("has_clip");
+    if (!clipExists) {
+      await clipSlot.createClip(stateClip.loopLength);
+    }
+    const clip = await clipSlot.get("clip");
+    await clip.set("loop_start", 0);
+    await clip.set("loop_end", stateClip.loopLength);
+    await clip.selectAllNotes();
+    await clip.replaceSelectedNotes(stateClip.notes)
+    if (stateClip.startTime !== undefined && stateClip.endTime !== undefined) {
+      const localTime = stateClip.startTime
+      while (localTime < stateClip.endTime) {
+        await track.sendCommand("duplicate_clip_to_arrangement", {clip_id: clip.raw.id, time: stateClip.localTime});
+        localTime = localTime + stateClip.loopLength
       }
-      const clipSlots = await track.get("clip_slots");
-      const clipSlot = clipSlots[0];
-      const clipExists = await clipSlot.get("has_clip");
-      if (!clipExists) {
-        await clipSlot.createClip(stateClip.loopLength);
-      }
-      const clip = await clipSlot.get("clip");
-      await clip.set("loop_start", 0);
-      await clip.set("loop_end", stateClip.loopLength);
-      await clip.selectAllNotes();
-      await clip.replaceSelectedNotes(stateClip.notes)
-      if (stateClip.startTime !== undefined && stateClip.endTime !== undefined) {
-        const localTime = stateClip.startTime
-        while (localTime < stateClip.endTime) {
-          await track.sendCommand("duplicate_clip_to_arrangement", {clip_id: clip.raw.id, time: stateClip.localTime});
-          localTime = localTime + stateClip.loopLength
-        }
-      }
-    })(stateClip));
+    }
   }
-  await Promise.all(updatePromises)
 
   if (removeOldClips) {
     removeClips = getRemovedClips(state, abletonClips);

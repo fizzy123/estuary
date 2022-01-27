@@ -25,17 +25,89 @@ describe("create named clip", function() {
     }));
   });
 
+  it("should fail creating melody if no progression and interval notes", () => {
+    delete spec.state.scale
+    try {
+      Clip.makeClip([{
+        note: "root.4",
+        start: 1,
+        duration: 1,
+      }], "test", 4)
+    } catch(e) {
+      assert.equal(e.message, "scale required to be set if providing interval notes");
+      return
+    }
+    throw new Error("should have errored")
+  });
+
+  it("should fail creating melody if no progression and scale degrees", () => {
+    delete spec.state.scale
+    try {
+      Clip.makeClip([{
+        note: "0.4",
+        start: 1,
+        duration: 1,
+      }], "test", 4)
+    } catch(e) {
+      assert.equal(e.message, "scale required to be set if providing scale degrees");
+      return
+    }
+    throw new Error("should have errored")
+  });
+
+
   it("should fail creating chordMapping if no progression", () => {
+    spec.state.scale = {
+      root: "C",
+      keySignature: scale.keySignatures["major"],
+      name: "major",
+    }
     try {
       Clip.makeNamedClip("downArp4", "arps").save();
     } catch (e) {
       assert.equal(e.message, "No progression found. Please set progression before adding a chord mapping");
+      return
     }
+    throw new Error("should have errored")
+  });
+
+  it("should create melody with interval notes", () => {
+    const clip = Clip.makeClip([{
+      note: "root.4",
+      start: 1,
+      duration: 1,
+    }], "test", 4)
+    assert.deepEqual(clip, new Clip({
+      notes: [{
+        pitch: 60,
+        start: 1,
+        duration: 1,
+      }],
+      track: "test",
+      loopLength: 4,
+    }));
+  });
+
+  it("should create melody with scale degrees", () => {
+    const clip = Clip.makeClip([{
+      note: "0.4",
+      start: 1,
+      duration: 1,
+    }], "test", 4)
+    assert.deepEqual(clip, new Clip({
+      notes: [{
+        pitch: 60,
+        start: 1,
+        duration: 1,
+      }],
+      track: "test",
+      loopLength: 4,
+    }));
   });
 
   it("should create chordMapping correctly with progression", () => {
     Chord.progression([
-      Chord.makeChord("I").start(0),
+      Chord.makeChord("I").invert(1).start(0),
       Chord.makeChord("ii").start(4),
       Chord.makeChord("vi").start(8),
       Chord.makeChord("V").start(12),
@@ -44,22 +116,22 @@ describe("create named clip", function() {
     assert.deepEqual(namedClip, new Clip({
       notes: [
         {
-          pitch: 67,
+          pitch: 72,
           start: 0,
           duration: 0.75,
         },
         {
-          pitch: 64,
+          pitch: 67,
           start: 1,
           duration: 0.75,
         },
         {
-          pitch: 60,
+          pitch: 64,
           start: 2,
           duration: 0.75,
         },
         {
-          pitch: 55,
+          pitch: 60,
           start: 3,
           duration: 0.75,
         },

@@ -19,6 +19,7 @@ const randomizer = require("./randomizer");
   // I may comment out lines that I don't want replaced
   //
   // I may move more towards a layout that's good for livecoding in the future
+  Clip.addNamedClip("upArp8")
   randomizer.addRandomClip("snare");
   randomizer.addRandomClip("kick");
   randomizer.addRandomClip("fastperc");

@@ -5,7 +5,7 @@ exports.renderChordMapping = (mapping, progression) => {
   let duration = 4 // default value of 4
   while (localTime < progression.duration) {
     // extract current chord information from the current progression
-    let chord = getChordFromProgression(progression, localTime + mapping[mappingIndex].start)
+    let chord = exports.getChordFromProgression(progression, localTime + mapping[mappingIndex].start)
 
     // duration needs to be computed based off of the next note in the mapping with a different start time
     // get next note in mapping with a different start time
@@ -29,7 +29,7 @@ exports.renderChordMapping = (mapping, progression) => {
     rawNotes.push({
         "pitch": chord.notes[chordOffset] + 12 * Math.floor(localChordIndex / chord.notes.length) + mapping[mappingIndex].octave*12,
         "start": localTime + mapping[mappingIndex].start,
-        "duration": duration
+        "duration": duration * 0.75
     })
 
     // get the next note from the mapping
@@ -44,7 +44,7 @@ exports.renderChordMapping = (mapping, progression) => {
   return rawNotes;
 }
 
-const getChordFromProgression = (progression, localTime) => {
+exports.getChordFromProgression = (progression, localTime) => {
   for (var i = 0; i < progression.chords.length-1; i++) {
     if ((progression.chords[i].start <= localTime) && (progression.chords[i+1].start > localTime)) {
       return progression.chords[i]
@@ -73,14 +73,14 @@ exports.mappingDefs = {
     {chordIndex: 0, start: 3, octave: 0}
   ],
   tonic8: [ // tonic every eighth note
-    {chordIndex: 0, start: 0, octave: 0},
-    {chordIndex: 0, start: 0.5, octave: 0},
-    {chordIndex: 0, start: 1, octave: 0},
-    {chordIndex: 0, start: 1.5, octave: 0},
-    {chordIndex: 0, start: 2, octave: 0},
-    {chordIndex: 0, start: 2.5, octave: 0},
-    {chordIndex: 0, start: 3, octave: 0},
-    {chordIndex: 0, start: 3.5, octave: 0}
+    {chordIndex: 0, start: 0, octave: -1},
+    {chordIndex: 0, start: 0.5, octave: -1},
+    {chordIndex: 0, start: 1, octave: -1},
+    {chordIndex: 0, start: 1.5, octave: -1},
+    {chordIndex: 0, start: 2, octave: -1},
+    {chordIndex: 0, start: 2.5, octave: -1},
+    {chordIndex: 0, start: 3, octave: -1},
+    {chordIndex: 0, start: 3.5, octave: -1}
   ],
   downArp8: [ // down eighth note arp
     {chordIndex: 0, start: 0, octave: 0},
@@ -103,22 +103,22 @@ exports.mappingDefs = {
     {chordIndex: 0, start: 3.5, octave: 0}
   ],
   tonic16: [ // tonic every sixteenth note
-    {chordIndex: 0, start: 0, octave: 0},
-    {chordIndex: 0, start: 0.25, octave: 0},
-    {chordIndex: 0, start: 0.5, octave: 0},
-    {chordIndex: 0, start: 0.75, octave: 0},
-    {chordIndex: 0, start: 1, octave: 0},
-    {chordIndex: 0, start: 1.25, octave: 0},
-    {chordIndex: 0, start: 1.5, octave: 0},
-    {chordIndex: 0, start: 1.75, octave: 0},
-    {chordIndex: 0, start: 2, octave: 0},
-    {chordIndex: 0, start: 2.25, octave: 0},
-    {chordIndex: 0, start: 2.5, octave: 0},
-    {chordIndex: 0, start: 2.75, octave: 0},
-    {chordIndex: 0, start: 3, octave: 0},
-    {chordIndex: 0, start: 3.25, octave: 0},
-    {chordIndex: 0, start: 3.5, octave: 0},
-    {chordIndex: 0, start: 3.75, octave: 0},
+    {chordIndex: 0, start: 0, octave: -1},
+    {chordIndex: 0, start: 0.25, octave: -1},
+    {chordIndex: 0, start: 0.5, octave: -1},
+    {chordIndex: 0, start: 0.75, octave: -1},
+    {chordIndex: 0, start: 1, octave: -1},
+    {chordIndex: 0, start: 1.25, octave: -1},
+    {chordIndex: 0, start: 1.5, octave: -1},
+    {chordIndex: 0, start: 1.75, octave: -1},
+    {chordIndex: 0, start: 2, octave: -1},
+    {chordIndex: 0, start: 2.25, octave: -1},
+    {chordIndex: 0, start: 2.5, octave: -1},
+    {chordIndex: 0, start: 2.75, octave: -1},
+    {chordIndex: 0, start: 3, octave: -1},
+    {chordIndex: 0, start: 3.25, octave: -1},
+    {chordIndex: 0, start: 3.5, octave: -1},
+    {chordIndex: 0, start: 3.75, octave: -1},
   ],
   downArp16: [ // down sixteenth note arp
     {chordIndex: 0, start: 0, octave: 1},
@@ -155,40 +155,6 @@ exports.mappingDefs = {
     {chordIndex: -2, start: 3.25, octave: 1},
     {chordIndex: -1, start: 3.5, octave: 1},
     {chordIndex: 0, start: 3.75, octave: 1},
-  ],
-  tonic32: [ // tonic every 32 note
-    {chordIndex: 0, start: 0, octave: 0},
-    {chordIndex: 0, start: 0.125, octave: 0},
-    {chordIndex: 0, start: 0.25, octave: 0},
-    {chordIndex: 0, start: 0.375, octave: 0},
-    {chordIndex: 0, start: 0.5, octave: 0},
-    {chordIndex: 0, start: 0.625, octave: 0},
-    {chordIndex: 0, start: 0.75, octave: 0},
-    {chordIndex: 0, start: 0.875, octave: 0},
-    {chordIndex: 0, start: 1, octave: 0},
-    {chordIndex: 0, start: 1.125, octave: 0},
-    {chordIndex: 0, start: 1.25, octave: 0},
-    {chordIndex: 0, start: 1.375, octave: 0},
-    {chordIndex: 0, start: 1.5, octave: 0},
-    {chordIndex: 0, start: 1.625, octave: 0},
-    {chordIndex: 0, start: 1.75, octave: 0},
-    {chordIndex: 0, start: 1.875, octave: 0},
-    {chordIndex: 0, start: 2, octave: 0},
-    {chordIndex: 0, start: 2.125, octave: 0},
-    {chordIndex: 0, start: 2.25, octave: 0},
-    {chordIndex: 0, start: 2.375, octave: 0},
-    {chordIndex: 0, start: 2.5, octave: 0},
-    {chordIndex: 0, start: 2.625, octave: 0},
-    {chordIndex: 0, start: 2.75, octave: 0},
-    {chordIndex: 0, start: 2.875, octave: 0},
-    {chordIndex: 0, start: 3, octave: 0},
-    {chordIndex: 0, start: 3.125, octave: 0},
-    {chordIndex: 0, start: 3.25, octave: 0},
-    {chordIndex: 0, start: 3.375, octave: 0},
-    {chordIndex: 0, start: 3.5, octave: 0},
-    {chordIndex: 0, start: 3.625, octave: 0},
-    {chordIndex: 0, start: 3.75, octave: 0},
-    {chordIndex: 0, start: 3.875, octave: 0},
   ],
   downArp32: [ // down 32nd note arp
     {chordIndex: 0, start: 0, octave: 2},

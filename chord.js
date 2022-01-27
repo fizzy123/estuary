@@ -21,13 +21,36 @@ class Chord {
     this.start = startTime
     return this
   }
+
+  invert(inversion) {
+    inversion = inversion % this.notes.length
+    for (let i = 0; i < inversion; i++) {
+      const first = this.notes.splice(0,1)
+      this.notes.push(first[0] + 12)
+    }
+    return this
+  }
+
+  alter(index, offset) {
+    this.notes[index] = this.notes[index] + offset
+  }
 }
 
 Chord.makeChord = (root, type) => {
+  const keySignature = spec.state.scale.keySignature
   if (util.notes[root]) {
     return new Chord(util.notes[root], Chord.chordTypes[type]);
   } else if (Chord.numeralChords[root]) {
-    return new Chord(60 + util.notes[spec.state.scale.root] + spec.state.scale.keySignature[Chord.numeralChords[root].offset], Chord.numeralChords[root].notes)
+    return new Chord(60 + util.notes[spec.state.scale.root] + keySignature[Chord.numeralChords[root].offset], Chord.numeralChords[root].notes)
+  } else if (typeof root === "number" && root.isInteger()) {
+    root = root - 1;
+    if (root >= keySignature.length) {
+      throw new Error(`key signature has fewer degrees than ${root + 1}`)
+    }
+    const midiRoot = 60 + util.notes[spec.state.scale.root] + keySignature[root]
+    const midiSecond = 60 + 12 * Math.floor((spec.state.scale.root + 2)/keySignature.length) + util.notes[(spec.state.scale.root + 2) % keySignature.length] + keySignature[root]
+    const midiThird = 60 + 12 * Math.floor((spec.state.scale.root + 4)/keySignature.length) + util.notes[(spec.state.scale.root + 4) % keySignature.length] + keySignature[root]
+    return new Chord(midiRoot, [midiSecond, midiThird])
   } else {
     throw new Error("Invalid chord provided.")
   }
@@ -70,11 +93,16 @@ Chord.progression = (chords, duration) => {
   spec.state.progression = progression;
 }
 
+Chord.inferNumeral = (chordNumber) => {
+
+}
+
 const chordTypes = {
   "major": ["maj3", "perf5"],
   "maj": ["maj3", "perf5"],
   "minor": ["min3", "perf5"],
   "min": ["min3", "perf5"],
+  "dim": ["min3", "dim5"],
 }
 
 Chord.chordTypes = chordTypes;
@@ -84,6 +112,7 @@ Chord.numeralChords = {
   "i": { offset: 0, notes: chordTypes["minor"] },
   "II": { offset: 1, notes: chordTypes["major"] },
   "ii": { offset: 1, notes: chordTypes["minor"] },
+  "iiDim": { offset: 1, notes: chordTypes["dim"] },
   "III": { offset: 2, notes: chordTypes["major"] },
   "iii": { offset: 2, notes: chordTypes["minor"] },
   "IV": { offset: 3, notes: chordTypes["major"] },
@@ -94,5 +123,6 @@ Chord.numeralChords = {
   "vi": { offset: 5, notes: chordTypes["minor"] },
   "VII": { offset: 6, notes: chordTypes["major"] },
   "vii": { offset: 6, notes: chordTypes["minor"] },
+  "viiDim": { offset: 6, notes: chordTypes["dim"] },
 }
 module.exports = Chord;

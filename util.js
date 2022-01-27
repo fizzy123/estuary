@@ -3,7 +3,7 @@ exports.randomChoice = (array) => {
   if (array.length === 0) {
     return
   }
-  if (typeof array[0] !== "object" || Array.isArray(array[0])) {
+  if (array[0].weight === undefined || Array.isArray(array[0])) {
     return array[Math.floor(array.length * Math.random())]
   } else {
     // First, we loop the main dataset to count up the total weight. We're starting the counter at one because the upper boundary of Math.random() is exclusive.

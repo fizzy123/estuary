@@ -3,7 +3,9 @@ const util = require("./util");
 
 exports.keySignatures = {
   "major": [0,2,4,5,7,9,11],
+  "major_pentatonic": [0,2,4,7,9],
   "minor": [0,2,3,5,7,8,10],
+  "minor_pentatonic": [0,3,5,7,10],
 }
 
 exports.setScale = (root, keySignature) => {
