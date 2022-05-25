@@ -29,7 +29,7 @@ exports.renderChordMapping = (mapping, progression) => {
     rawNotes.push({
         "pitch": chord.notes[chordOffset] + 12 * Math.floor(localChordIndex / chord.notes.length) + mapping[mappingIndex].octave*12,
         "start": localTime + mapping[mappingIndex].start,
-        "duration": duration * 0.75
+        "duration": duration * 0.90
     })
 
     // get the next note from the mapping
@@ -379,6 +379,40 @@ exports.mappingDefs = {
     {chordIndex: -1, start: 3, octave: 0},
     {chordIndex: -2, start: 3, octave: 0},
     {chordIndex: -3, start: 3, octave: 0}
+  ],
+  chord8: [ // chord every quarter note
+    {chordIndex: 0, start: 0, octave: 0},
+    {chordIndex: -1, start: 0, octave: 0},
+    {chordIndex: -2, start: 0, octave: 0},
+    {chordIndex: -3, start: 0, octave: 0},
+    {chordIndex: 0, start: 0.5, octave: 0},
+    {chordIndex: -1, start: 0.5, octave: 0},
+    {chordIndex: -2, start: 0.5, octave: 0},
+    {chordIndex: -3, start: 0.5, octave: 0},
+    {chordIndex: 0, start: 1, octave: 0},
+    {chordIndex: -1, start: 1, octave: 0},
+    {chordIndex: -2, start: 1, octave: 0},
+    {chordIndex: -3, start: 1, octave: 0},
+    {chordIndex: 0, start: 1.5, octave: 0},
+    {chordIndex: -1, start: 1.5, octave: 0},
+    {chordIndex: -2, start: 1.5, octave: 0},
+    {chordIndex: -3, start: 1.5, octave: 0},
+    {chordIndex: 0, start: 2, octave: 0},
+    {chordIndex: -1, start: 2, octave: 0},
+    {chordIndex: -2, start: 2, octave: 0},
+    {chordIndex: -3, start: 2, octave: 0},
+    {chordIndex: 0, start: 2.5, octave: 0},
+    {chordIndex: -1, start: 2.5, octave: 0},
+    {chordIndex: -2, start: 2.5, octave: 0},
+    {chordIndex: -3, start: 2.5, octave: 0},
+    {chordIndex: 0, start: 3, octave: 0},
+    {chordIndex: -1, start: 3, octave: 0},
+    {chordIndex: -2, start: 3, octave: 0},
+    {chordIndex: -3, start: 3, octave: 0},
+    {chordIndex: 0, start: 3.5, octave: 0},
+    {chordIndex: -1, start: 3.5, octave: 0},
+    {chordIndex: -2, start: 3.5, octave: 0},
+    {chordIndex: -3, start: 3.5, octave: 0}
   ],
   chord2Offset: [ // chord fast snare
     {chordIndex: 0, start: 1, octave: 0},

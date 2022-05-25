@@ -6,6 +6,7 @@ let state = {
     root: "C",
     keySignature: scale.keySignatures["major"],
     name: "major",
-  }
+  },
+  fx: []
 }
 exports.state = state

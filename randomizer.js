@@ -1,8 +1,8 @@
 const util = require("./util");
-const Clip = require("./clip");
 const chordMapping = require("./chordMapping");
 const spec = require("./spec");
 const scale = require("./scale");
+const Clip = require("./clip");
 
 exports.trackParts = {
   "kick": [
@@ -15,14 +15,20 @@ exports.trackParts = {
     "fastSyncopate1",
     "12alt",
     "3alt4",
+    "3skip1",
+    "3skip2",
   ],
   "snare": [
     "1offset",
-    "2offset"
+    "2offset",
+    "2offsetAlt1",
   ],
   "fastperc": [
+    "6",
     "8",
     "16",
+    "fastSyncopate1",
+    "12alt",
   ],
   "perc1": [
     "4",
@@ -36,6 +42,10 @@ exports.trackParts = {
     "fastSyncopate1",
     "12alt",
     "3alt4",
+    "3skip1",
+    "3skip2",
+    "2offsetAlt1",
+    "4offsetAlt1",
   ],
   "perc2": [
     "4",
@@ -49,20 +59,17 @@ exports.trackParts = {
     "fastSyncopate1",
     "12alt",
     "3alt4",
+    "3skip1",
+    "3skip2",
+    "2offsetAlt1",
+    "4offsetAlt1",
   ],
   "arp": [
-    "tonic8",
-    "downArp8",
-    "upArp8",
     "tonic16",
     "downArp16",
     "upArp16",
     "downArp32",
     "upArp32",
-    "downArp8Half",
-    "upArp8Half",
-    "downUpArp8",
-    "upDownArp8",
     "downArp16",
     "upArp16",
     "downUpArp16",
@@ -76,9 +83,6 @@ exports.trackParts = {
     "chord4Offset",
     "chord3",
     "chord6",
-  ],
-  "pad": [
-    "chord1",
   ],
   "rhythm1": [
     "tonic4",
@@ -100,6 +104,13 @@ exports.trackParts = {
     "mixArp3",
     "mixArp3Alt1",
     "mixArp3Alt2",
+    "tonic8",
+    "downArp8",
+    "upArp8",
+    "downArp8Half",
+    "upArp8Half",
+    "downUpArp8",
+    "upDownArp8",
   ],
   "rhythm2": [
     "tonic4",
@@ -131,7 +142,6 @@ exports.trackParts = {
     "tonicFastSyncopate1",
     "tonic12",
     "tonic3alt4",
-    "mixArp4",
     "mixArp4Alt1",
     "mixArp3",
     "mixArp3Alt1",
@@ -174,8 +184,9 @@ const selectPart = (trackName) => {
 }
 
 exports.addRandomClip = (trackName, sceneNumber) => {
-  const partName = util.randomChoice(exports.trackParts[trackName])
-  Clip.makeNamedClip(partName, trackName).setVelocity(Math.floor(Math.random() * 127)).setSceneNumber(sceneNumber).save();
+  let partOptions = exports.trackParts[trackName].slice()
+  const partName = util.randomChoice(partOptions)
+  return Clip.makeNamedClip(partName, trackName).setVelocity(Math.floor(Math.random() * 127)).setSceneNumber(sceneNumber).save();
 }
 
 const randTracks = [
@@ -403,7 +414,7 @@ exports.randomMelody = (loopLength, track, sceneNumber) => {
     localTime = localTime + prototypeMelody.loopLength
   }
   melodyMapping = melodyMapping.filter((note) => {
-    return Math.random() < 0.75
+    return Math.random() < 0.75 && note.start < loopLength/4
   });
   const currentNoteLength = melodyMapping.length
   for (let i = 0; i < currentNoteLength; i++) {

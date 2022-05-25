@@ -1,8 +1,13 @@
 const util = require("./util");
 const spec = require("./spec");
+const { ableton } = require("./ableton");
 class Chord {
   constructor(root, additionalNotes) {
+    if (!root) {
+      return
+    }
     this.notes = [root];
+    this.root = root
     for (const note of additionalNotes) {
       let offset = note
       if (typeof note === "string") {
@@ -13,8 +18,12 @@ class Chord {
   }
 
   addInterval(interval) {
-    this.notes.push(root + intervals[interval]);
+    this.notes.push(this.root + util.intervals[interval]);
     return this;
+  }
+
+  setNotes(notes) {
+    this.notes = notes;
   }
 
   start(startTime) {
@@ -33,6 +42,7 @@ class Chord {
 
   alter(index, offset) {
     this.notes[index] = this.notes[index] + offset
+    return this
   }
 }
 
@@ -42,14 +52,14 @@ Chord.makeChord = (root, type) => {
     return new Chord(util.notes[root], Chord.chordTypes[type]);
   } else if (Chord.numeralChords[root]) {
     return new Chord(60 + util.notes[spec.state.scale.root] + keySignature[Chord.numeralChords[root].offset], Chord.numeralChords[root].notes)
-  } else if (typeof root === "number" && root.isInteger()) {
+  } else if (Number.isInteger(root)) {
     root = root - 1;
     if (root >= keySignature.length) {
       throw new Error(`key signature has fewer degrees than ${root + 1}`)
     }
     const midiRoot = 60 + util.notes[spec.state.scale.root] + keySignature[root]
-    const midiSecond = 60 + 12 * Math.floor((spec.state.scale.root + 2)/keySignature.length) + util.notes[(spec.state.scale.root + 2) % keySignature.length] + keySignature[root]
-    const midiThird = 60 + 12 * Math.floor((spec.state.scale.root + 4)/keySignature.length) + util.notes[(spec.state.scale.root + 4) % keySignature.length] + keySignature[root]
+    const midiSecond = 12 * Math.floor((root + 2) / keySignature.length) + keySignature[(root + 2) % keySignature.length] - keySignature[root] 
+    const midiThird = 12 * Math.floor((root + 4) / keySignature.length) + keySignature[(root + 4) % keySignature.length] - keySignature[root]
     return new Chord(midiRoot, [midiSecond, midiThird])
   } else {
     throw new Error("Invalid chord provided.")
@@ -95,6 +105,50 @@ Chord.progression = (chords, duration) => {
 
 Chord.inferNumeral = (chordNumber) => {
 
+}
+
+Chord.readAllChordClips = async () => {
+  const tracks = await ableton.song.get("tracks");
+  const chordTrack = tracks.filter((track) => {
+    return track.raw.name === "chords"
+  })[0];
+  const clipSlots = await chordTrack.get("clip_slots");
+  const chordProgressions = []
+  for (const clipSlot of clipSlots) {
+    if (!clipSlot.raw.has_clip) {
+      continue
+    }
+    const chordProgression = []
+    const clip = await clipSlot.get("clip");
+    const length = await clip.get("length");
+    const notes = await clip.getNotes(0, 0, length, 128)
+    let chord = []
+    let chordPosition = 0
+    notes.sort((a, b) => {
+      return a.time - b.time
+    } )
+    for (let note of notes) {
+      if (chordPosition === note.time) {
+        chord.push(note.pitch)
+      } else {
+        chordProgression.push({
+          notes: chord,
+          start: chordPosition,
+        });
+        chordPosition = note.time
+        chord = [note.pitch]
+      }
+    }
+    chordProgression.push({
+      notes: chord,
+      start: chordPosition,
+    });
+    chordProgressions.push({
+      chords: chordProgression,
+      duration: length,
+    });
+  }
+  return chordProgressions
 }
 
 const chordTypes = {

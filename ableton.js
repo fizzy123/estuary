@@ -1,10 +1,12 @@
 const fs = require("fs");
 const _ = require("lodash");
 const { Ableton } = require("ableton-js");
-const ableton = new Ableton();
 const sqlite3 = require('sqlite3');
 const util = require("./util");
 const db = new sqlite3.Database("/Users/nobelyoo/Dropbox/User Library/Presets/Instruments/Max Instrument/songs.db");
+
+const ableton = new Ableton();
+exports.ableton = ableton;
 
 const loops = {}
 db.each("SELECT name, key, bpm FROM loops", function(err, row) {
@@ -53,27 +55,14 @@ exports.updateLoopKeys = async (state) => {
 
 exports.sync = async (state, removeOldClips) => {
   let abletonClips = []
-  try {
-  const jsonString = fs.readFileSync(`/tmp/${state.name}_state.json`)
-    abletonClips = JSON.parse(jsonString)
-  } catch (e) {
-    if (e.message.includes("no such file or directory")) {
-      console.log("no state file found. creating new one");
-    } else {
-      throw e
-    }
-  }
-
   const tracks = await ableton.song.get("tracks");
   // write and/or update clips
-  diffClips = getUpdatedClips(state, abletonClips);
   const updatePromises = []
-  for (const stateClip of diffClips) {
+  for (const stateClip of Object.values(state.clips)) {
     validateClip(stateClip);
     const track = tracks.filter((track) => {
       return track.raw.name === stateClip.track
     })[0];
-    console.log(stateClip.track);
     if (!track) {
       throw new Error(`Track ${stateClip.track} could not be found`);
     }
@@ -84,20 +73,51 @@ exports.sync = async (state, removeOldClips) => {
     }
     const clipSlot = clipSlots[scene];
     const clipExists = await clipSlot.get("has_clip");
-    if (!clipExists) {
-      await clipSlot.createClip(stateClip.loopLength);
+    if (clipExists) {
+      await clipSlot.deleteClip();
     }
+    await clipSlot.createClip(stateClip.loopLength);
     const clip = await clipSlot.get("clip");
-    await clip.set("loop_start", 0);
-    await clip.set("loop_end", stateClip.loopLength);
     await clip.selectAllNotes();
     await clip.replaceSelectedNotes(stateClip.notes)
+    await clip.set("loop_end", stateClip.loopLength);
+
     if (stateClip.startTime !== undefined && stateClip.endTime !== undefined) {
-      const localTime = stateClip.startTime
+      if (["bass", "arp", "chord", "rhythm1", "rhythm2"].includes(stateClip.track)) {
+        await clip.set("start_marker", stateClip.loopStart || 0);
+        await clip.set("looping", false);
+      }
+      let localTime = stateClip.startTime
+
       while (localTime < stateClip.endTime) {
-        await track.sendCommand("duplicate_clip_to_arrangement", {clip_id: clip.raw.id, time: stateClip.localTime});
+        if (stateClip.endTime - localTime < stateClip.loopLength) {
+          if (["kick", "snare", "fastperc", "perc1", "perc2"].includes(stateClip.track)) {
+            await clip.set("loop_end", stateClip.endTime - localTime);
+          }
+        }
+        await track.sendCommand("duplicate_clip_to_arrangement", {clip_id: clip.raw.id, time: localTime});
+        if (localTime === stateClip.startTime && stateClip.loopStart) {
+          await clip.set("start_marker", 0);
+          await clip.set("loop_start", 0);
+          await clip.set("looping", true);
+          localTime = localTime - stateClip.loopStart
+        }
         localTime = localTime + stateClip.loopLength
       }
+    }
+  }
+  if (state.fx.length !== 0) {
+    const track = tracks.filter((track) => {
+      return track.raw.name === "fx"
+    })[0];
+    if (!track) {
+      throw new Error(`Track fx could not be found`);
+    }
+    for (let fx of state.fx) {
+      const clipSlots = await track.get("clip_slots");
+      const clipSlot = clipSlots[fx.type];
+      const clip = await clipSlot.get("clip");
+      await track.sendCommand("duplicate_clip_to_arrangement", {clip_id: clip.raw.id, time: fx.start});
     }
   }
 
@@ -111,11 +131,6 @@ exports.sync = async (state, removeOldClips) => {
       const clipSlot = clipSlots[0];
       await clipSlot.deleteClip();
     }
-  }
-
-  if (state.name) {
-    let data = JSON.stringify(abletonClips);
-    fs.writeFileSync(`/tmp/${state.name}_state.json`, data);
   }
 }
 
@@ -167,12 +182,14 @@ function validateClip(clip) {
     if (!note.duration) {
       throw new Error("Note has no duration");
     }
-    if (note.start === undefined) {
-      throw new Error("Note has no start");
+    if (note.time === undefined) {
+      if (note.start === undefined) {
+        throw new Error("Note has no start");
+      }
+      // convert "start" to "time" which ableton expects
+      note.time = note.start
+      delete note.start
     }
-    // convert "start" to "time" which ableton expects
-    note.time = note.start
-    delete note.start
 
     // set defaults that will be used later
     if (!note.velocity) {
@@ -182,4 +199,22 @@ function validateClip(clip) {
       note.muted = false;
     }
   }
+}
+
+exports.setDeviceParameter = async (trackName, deviceName, parameterName, value) => {
+  const tracks = await ableton.song.get("tracks");
+  const track = tracks.filter((t) => {
+    return t.raw.name === trackName
+  })[0];
+
+  const devices = await track.get("devices");
+  const device = devices.filter((d) => {
+    return d.raw.name === deviceName
+  })[0];
+
+  const parameters = await device.get("parameters");
+  const parameter = parameters.filter((p) => {
+    return p.raw.name === parameterName
+  })[0]
+  await parameter.set("value", value)
 }

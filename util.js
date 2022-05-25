@@ -1,3 +1,11 @@
+exports.isPerc = (part) => {
+  return ["kick", "snare", "fastperc", "perc1", "perc2"].includes(part)
+}
+
+exports.isMelodic = (part) => {
+  return ["bass", "arp", "chord", "rhythm1", "rhythm2"].includes(part)
+}
+
 // supports both simple arrays and complex weighted arrays
 exports.randomChoice = (array) => {
   if (array.length === 0) {
@@ -46,6 +54,30 @@ exports.randomSelection = (inputArray, selectionCount) => {
     resArr.push(arrCopy.splice(ranIdx,1)[0])  
   }
   return resArr
+}
+
+exports.randomCombination = (array, size) => {
+  let arrayCopy = array.slice()
+  exports.shuffle(arrayCopy)
+  return arrayCopy.slice(0, size)
+}
+
+exports.shuffle = (array) => {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
 }
 
 exports.notes = {
@@ -111,4 +143,18 @@ exports.intervals = {
   "maj7": 11,
   "M7": 11,
   "octave": 12,
+  "m9": 13,
+  "min9": 13,
+  "minor9": 13,
+  "M9": 14,
+  "maj9": 14,
+  "major9": 14, 
+  "m10": 15,
+  "min10": 15,
+  "minor10": 15,
+  "M10": 16,
+  "maj10": 16,
+  "major10": 16, 
+  "P11": 17,
+  "perf11": 17,
 }

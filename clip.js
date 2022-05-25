@@ -34,7 +34,7 @@ class Clip {
   slice(startTime, endTime) {
     const newNotes = []
     for (const note of this.notes) {
-      if (note.start > startTime && note.start < endTime) {
+      if (note.start >= startTime && note.start < endTime) {
         newNotes.push(note);
       }
     }
@@ -65,6 +65,11 @@ class Clip {
   setSceneNumber(sceneNumber) {
     this.sceneNumber = sceneNumber;
     return this
+  }
+
+  setLoopStart(loopStart) {
+    this.loopStart = loopStart
+    return this;
   }
 
   addToArrangement(startTime, endTime) {
@@ -99,6 +104,29 @@ Clip.makeNamedClip = (clipName, track) => {
       track,
       loopLength: spec.state.progression.duration,
     });
+  } else if (clipName === "random" && ["kick", "snare", "fastperc", "perc1", "perc2"].includes(track)) {
+    const loopLength = 36 // irregular multiple of 4
+    let currentLength = 0;
+    let notes = []
+    while (currentLength < loopLength) {
+      let partName = util.randomChoice(randomizer.trackParts[track])
+      let part = Object.assign({}, Clip.namedClips[partName])
+      const goalLength = currentLength + 4
+      while (currentLength < goalLength) {
+        let partNotes = part.notes.slice().map((note) => {
+          let noteCopy = Object.assign({}, note)
+          noteCopy.start = noteCopy.start + currentLength
+          return noteCopy
+        })
+        notes = notes.concat(partNotes)
+        currentLength = currentLength + part.loopLength
+      }
+    }
+    return new Clip({
+      notes,
+      track,
+      loopLength,
+    })
   }
 }
 
@@ -155,6 +183,21 @@ Clip.namedClips = {
     ],
     loopLength: 4,
   },
+  "2offsetAlt1": {
+    notes: [
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 1.5,
+        duration: 1,
+      },
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 3,
+        duration: 1,
+      }
+    ],
+    loopLength: 4,
+  },
   "4": {
     notes: [
       {
@@ -195,6 +238,31 @@ Clip.namedClips = {
       {
         pitch: Clip.PERC_DEFAULT_PITCH,
         start: 2.5,
+        duration: 1,
+      },
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 3.5,
+        duration: 1,
+      }
+    ],
+    loopLength: 4,
+  },
+  "4offsetAlt1": {
+    notes: [
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 0.75,
+        duration: 1,
+      },
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 1.5,
+        duration: 1,
+      },
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 2.75,
         duration: 1,
       },
       {
@@ -280,6 +348,36 @@ Clip.namedClips = {
       {
         pitch: Clip.PERC_DEFAULT_PITCH,
         start: 3,
+        duration: 1,
+      },
+    ],
+    loopLength: 4,
+  },
+  "3skip1": {
+    notes: [
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 0,
+        duration: 1,
+      },
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 3,
+        duration: 1,
+      },
+    ],
+    loopLength: 4,
+  },
+  "3skip2": {
+    notes: [
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 0,
+        duration: 1,
+      },
+      {
+        pitch: Clip.PERC_DEFAULT_PITCH,
+        start: 1.5,
         duration: 1,
       },
     ],
@@ -507,3 +605,6 @@ Clip.namedClips = {
   },
 }
 module.exports = Clip
+
+// avoid circular dependancies
+const randomizer = require("./randomizer");
