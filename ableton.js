@@ -3,7 +3,7 @@ const _ = require("lodash");
 const { Ableton } = require("ableton-js");
 const sqlite3 = require('sqlite3');
 const util = require("./util");
-const db = new sqlite3.Database("/Users/nobelyoo/Dropbox/User Library/Presets/Instruments/Max Instrument/songs.db");
+const db = new sqlite3.Database("/Users/seonyoo/Dropbox/User Library/Presets/Instruments/Max Instrument/songs.db");
 
 const ableton = new Ableton();
 exports.ableton = ableton;

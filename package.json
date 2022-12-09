@@ -5,8 +5,9 @@
   "version": "0.1.0",
   "main": "estuary",
   "dependencies": {
-    "ableton-js": "^2.1.4",
+    "ableton-js": "^2.4.0",
     "lodash": "^4.17.21",
+    "package.json": "^2.0.1",
     "sqlite3": "^5.0.2",
     "why-is-node-running": "^2.2.0"
   },

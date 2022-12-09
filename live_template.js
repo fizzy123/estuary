@@ -14,22 +14,42 @@ scale.setScale("C", "major");
   const setupProgressionIndex = 3
 
   progressions = await Chord.readAllChordClips() 
-  console.log(progressions[2].chords.length);
-  Chord.progression(progressions[setupProgressionIndex].chords, progressions[setupProgressionIndex].duration)
+  for (let progressionIndex = 0; progressionIndex < progressions.length; progressionIndex++) {
+    console.log(progressions[progressionIndex])
+    Chord.progression(progressions[progressionIndex].chords, progressions[progressionIndex].duration)
+    let offset = 2 * progressionIndex
 
-  for (let sceneNumber = 0; sceneNumber < PART_COUNT; sceneNumber++) {
-    let partName = util.randomChoice(randomizer.trackParts["arp"])
-    let offset = 11 * setupProgressionIndex
-    Clip.makeNamedClip(partName, "arp 1").setSceneNumber(sceneNumber + offset).setVelocity(Math.floor(Math.random() * 127)).save()
+    let partName = util.randomChoice(randomizer.trackParts["arp.16"])
+    Clip.makeNamedClip(partName, "arp1 16").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
 
-    partName = util.randomChoice(randomizer.trackParts["arp"])
-    Clip.makeNamedClip(partName, "arp 2").setSceneNumber(sceneNumber + offset).setVelocity(Math.floor(Math.random() * 127)).save()
+    partName = util.randomChoice(randomizer.trackParts["arp.32"])
+    Clip.makeNamedClip(partName, "arp1 32").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
 
-    partName = util.randomChoice(randomizer.trackParts["rhythm1"])
-    Clip.makeNamedClip(partName, "rhythm").setSceneNumber(sceneNumber + offset).setVelocity(Math.floor(Math.random() * 127)).save()
+    partName = util.randomChoice(randomizer.trackParts["arp.16"])
+    Clip.makeNamedClip(partName, "arp2 16").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
 
-    partName = util.randomChoice(randomizer.trackParts["chord"])
-    Clip.makeNamedClip(partName, "chord rhythm").setSceneNumber(sceneNumber + offset).setVelocity(Math.floor(Math.random() * 127)).save()
+    partName = util.randomChoice(randomizer.trackParts["arp.32"])
+    Clip.makeNamedClip(partName, "arp2 32").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
+
+    Clip.makeNamedClip("tonic16", "bassline 16").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
+    Clip.makeNamedClip("tonic8", "bassline 8").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
+
+    partName = util.randomChoice(randomizer.trackParts["rhythm.4"])
+    Clip.makeNamedClip(partName, "rhythm 4").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
+
+    partName = util.randomChoice(randomizer.trackParts["rhythm.8"])
+    Clip.makeNamedClip(partName, "rhythm 8").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
+
+    partName = util.randomChoice(randomizer.trackParts["rhythm.triplet"])
+    Clip.makeNamedClip(partName, "rhythm triplet").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
+
+    Clip.makeNamedClip("tonic6", "rhythm 6").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
+    Clip.makeNamedClip("tonic4Offset", "rhythm 4 offset").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
+
+
+    Clip.makeNamedClip("chord4", "chord rhythm 4").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
+    Clip.makeNamedClip("chord6", "chord rhythm 6").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
+    Clip.makeNamedClip("chord4Offset", "chord rhythm 4 offset").setSceneNumber(offset).setVelocity(Math.floor(Math.random() * 127)).save()
   }
   await ableton.sync(spec.state, false);
 
